@@ -4,63 +4,68 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Category {
-
-    private final String DEFAULT_CATEGORY = "OTHER";
-
     private String name;
     private double budgetLimit;
     private double spent = 0;
-    private List<Double> spending =  new ArrayList<>();
+    private List<Transaction> categoryTransactions = new ArrayList<>();
 
-    public void addSpent(double value) {
-        spent += value;
-        addSpending(value);
+    public Category(String name) {
+        this.name = name;
     }
 
-    public boolean isOverBudget() {
-        return spent > budgetLimit;
+    public Category(String name, double budgetLimit) {
+        this.name = name;
+        this.budgetLimit = budgetLimit;
     }
 
-    public List<Double> getSpending() {
-        return spending;
-    }
-
-    public void setSpending(List<Double> spending) {
-        this.spending = spending;
-    }
-
-    public void addSpending(Double spending) {
-        this.spending.add(spending);
-    }
-
-    public void removeSpending(Double spending) {
-        this.spending.remove(spending);
+    public String getName() {
+        return name;
     }
 
     public double getBudgetLimit() {
         return budgetLimit;
     }
 
-    public void setBudgetLimit(double budgetLimit) {
-        this.budgetLimit = budgetLimit;
-    }
-
     public double getSpent() {
         return spent;
+    }
+
+    public List<Transaction> getCategoryTransactions() {
+        return categoryTransactions;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setBudgetLimit(double budgetLimit) {
+        this.budgetLimit = budgetLimit;
     }
 
     public void setSpent(double spent) {
         this.spent = spent;
     }
 
-    public String getName() {
-        return name.toUpperCase();
-    }
-    public void setName(String name) throws IllegalArgumentException {
-        if (name == null || name.isEmpty()) {
-            throw new IllegalArgumentException("name cannot be empty");
-        }
-        this.name = name;
+    public void setCategoryTransactions(List<Transaction> categoryTransactions) {
+        this.categoryTransactions = categoryTransactions;
     }
 
+    public void addSpent(double value) {
+        this.spent += value;
+    }
+
+    public void addTransaction(Transaction t) {
+        this.categoryTransactions.add(t);
+        this.addSpent(t.isIncome() ? t.getAmount() : -t.getAmount());
+    }
+
+    public boolean isLimitExceeded() {
+        return budgetLimit > 0 && spent > budgetLimit;
+    }
+
+    @Override
+    public String toString() {
+        return name + " | Потрачено: " + spent +
+                (budgetLimit > 0 ? " / Лимит: " + budgetLimit : "");
+    }
 }

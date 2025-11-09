@@ -1,14 +1,27 @@
 package org.example.domain;
 
-import java.time.LocalDateTime;
-
 public class Transaction {
     private double amount;
     private String category;
     private boolean isIncome;
     private long timestamp;
+    private String comment;
 
 
+    public Transaction(double amount, String category,boolean isIncome) {
+        this.amount = amount;
+        this.category = category;
+        this.isIncome = isIncome;
+        this.timestamp = System.currentTimeMillis();
+    }
+
+    public Transaction(double amount, String category,boolean isIncome, String comment) {
+        this.amount = amount;
+        this.category = category;
+        this.isIncome = isIncome;
+        this.timestamp = System.currentTimeMillis();
+        this.comment = comment;
+    }
 
     public double getAmount() {
         return amount;
@@ -40,5 +53,13 @@ public class Transaction {
 
     public void setTimestamp(long timestamp) {
         this.timestamp = timestamp;
+    }
+
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
     }
 }
