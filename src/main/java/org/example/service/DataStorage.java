@@ -22,7 +22,7 @@ public class DataStorage {
             Files.createDirectories(FILE.getParent());
             Files.writeString(FILE, json);
         } catch (IOException e) {
-            throw new RuntimeException("Ошибка при сохранении данных пользователей", e);
+            System.out.println("Ошибка при сохранении данных пользователей: " + e.getMessage());
         }
     }
 
@@ -37,7 +37,9 @@ public class DataStorage {
             Map<String, User> users = gson.fromJson(json, type);
             return users != null ? users : new HashMap<>();
         } catch (IOException e) {
-            throw new RuntimeException("Ошибка при загрузке данных пользователей", e);
+            System.out.println("Ошибка при загрузке данных пользователей: " +  e.getMessage());
         }
+
+        return new HashMap<>();
     }
 }

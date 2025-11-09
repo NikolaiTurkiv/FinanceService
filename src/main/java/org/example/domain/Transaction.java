@@ -1,10 +1,10 @@
 package org.example.domain;
 
 public class Transaction {
-    private double amount;
-    private String category;
-    private boolean isIncome;
-    private long timestamp;
+    private final double amount;
+    private final String category;
+    private final boolean isIncome;
+    private final long timestamp;
     private String comment;
 
 
@@ -27,36 +27,16 @@ public class Transaction {
         return amount;
     }
 
-    public void setAmount(double amount) {
-        this.amount = amount;
-    }
-
     public String getCategory() {
         return category;
-    }
-
-    public void setCategory(String category) {
-        this.category = category;
     }
 
     public boolean isIncome() {
         return isIncome;
     }
 
-    public void setIncome(boolean income) {
-        isIncome = income;
-    }
-
     public long getTimestamp() {
         return timestamp;
-    }
-
-    public void setTimestamp(long timestamp) {
-        this.timestamp = timestamp;
-    }
-
-    public String getComment() {
-        return comment;
     }
 
     public void setComment(String comment) {

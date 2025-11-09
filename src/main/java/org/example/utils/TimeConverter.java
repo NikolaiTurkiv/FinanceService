@@ -9,7 +9,7 @@ public class TimeConverter {
         Date date = new Date(millis);
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-//        непринципиально в рамках сессионого задания
+//        непринципиально в рамках сессионного задания
         dateFormat.setTimeZone(TimeZone.getDefault());
 
         return dateFormat.format(date);

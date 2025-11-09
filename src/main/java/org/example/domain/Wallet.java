@@ -2,6 +2,7 @@ package org.example.domain;
 
 import org.example.exceptions.CategoryNotFoundException;
 import org.example.utils.Constants;
+import org.example.utils.TimeConverter;
 
 import java.util.*;
 
@@ -12,9 +13,7 @@ public class Wallet {
     private final Set<Category> categories = new HashSet<>();
 
     public Wallet() {
-        if (categories.isEmpty()) {
-            categories.add(new Category(Constants.DEFAULT_CATEGORY));
-        }
+        categories.add(new Category(Constants.DEFAULT_CATEGORY));
         this.balance = 0;
     }
 
@@ -47,14 +46,6 @@ public class Wallet {
         return balance;
     }
 
-    public void setBalance(double balance) {
-        this.balance = balance;
-    }
-
-    public List<Transaction> getTransactions() {
-        return transactions;
-    }
-
     public Set<Category> getCategories() {
         return categories;
     }
@@ -75,23 +66,37 @@ public class Wallet {
         transactions.stream()
                 .sorted(Comparator.comparingLong(Transaction::getTimestamp).reversed())
                 .forEach(t -> System.out.printf("[%s] %s %.2f (%s)%n",
-                        new Date(t.getTimestamp()), t.isIncome() ? "+" : "-", t.getAmount(), t.getCategory()));
+                        TimeConverter.millisToDateTime(t.getTimestamp()), t.isIncome() ? "+" : "-", t.getAmount(), t.getCategory()));
     }
 
     public boolean removeCategory(String catName) throws CategoryNotFoundException {
-        Category category = categories.stream()
-                .filter(c -> c.getName().equalsIgnoreCase(catName))
-                .findFirst()
-                .orElse(null);
-
-        if (category == null) {
-            throw new CategoryNotFoundException("Категория не найдена");
-        }
+        Category category = getCategory(catName);
 
         return categories.remove(category);
     }
 
     public void setBudgetToCategory(String catName, double budget) throws CategoryNotFoundException {
+        Category category = getCategory(catName);
+
+        category.setBudgetLimit(budget);
+    }
+
+    public void changCategoryName(String catName, String newName) throws CategoryNotFoundException {
+        Category category = getCategory(catName);
+
+        category.setName(newName);
+
+    }
+
+    public void showCategoryReport(String catName) throws CategoryNotFoundException {
+        System.out.println("--- Отчет по категории ---");
+        Category category = getCategory(catName);
+
+        System.out.printf("Категория: %s | Потрачено: %.2f | Лимит: %.2f | Остаток: %.2f%n",
+                category.getName(), category.getSpent(), category.getBudgetLimit(), category.getBudgetLimit() - category.getSpent());
+    }
+
+    private Category getCategory(String catName) throws CategoryNotFoundException {
         Category category = categories.stream()
                 .filter(c -> c.getName().equalsIgnoreCase(catName))
                 .findFirst()
@@ -101,7 +106,6 @@ public class Wallet {
             throw new CategoryNotFoundException("Категория не найдена");
         }
 
-        category.setBudgetLimit(budget);
-
+        return category;
     }
 }

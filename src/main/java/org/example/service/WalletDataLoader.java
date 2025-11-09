@@ -11,14 +11,14 @@ import java.nio.file.Path;
 public class WalletDataLoader {
     private static final Path FILE = Path.of("resources/user.json");
     private static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
-
+// Выгрузка данных по конкретному пользователю
     public static void saveUser(User user) {
         try {
             String json = gson.toJson(user);
             Files.createDirectories(FILE.getParent());
             Files.writeString(FILE, json);
         } catch (IOException e) {
-            throw new RuntimeException("Ошибка при сохранении данных пользователей", e);
+            System.out.println("Ошибка при сохранении данных пользователей: " + e.getMessage());
         }
     }
 }

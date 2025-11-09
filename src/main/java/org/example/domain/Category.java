@@ -7,7 +7,7 @@ public class Category {
     private String name;
     private double budgetLimit;
     private double spent = 0;
-    private List<Transaction> categoryTransactions = new ArrayList<>();
+    private final List<Transaction> categoryTransactions = new ArrayList<>();
 
     public Category(String name) {
         this.name = name;
@@ -30,24 +30,12 @@ public class Category {
         return spent;
     }
 
-    public List<Transaction> getCategoryTransactions() {
-        return categoryTransactions;
-    }
-
     public void setName(String name) {
         this.name = name;
     }
 
     public void setBudgetLimit(double budgetLimit) {
         this.budgetLimit = budgetLimit;
-    }
-
-    public void setSpent(double spent) {
-        this.spent = spent;
-    }
-
-    public void setCategoryTransactions(List<Transaction> categoryTransactions) {
-        this.categoryTransactions = categoryTransactions;
     }
 
     public void addSpent(double value) {
@@ -60,11 +48,15 @@ public class Category {
     }
 
     public boolean isLimitExceeded() {
-        return budgetLimit > 0 && spent > budgetLimit;
+        return spent > budgetLimit;
     }
 
     @Override
     public String toString() {
+        if (isLimitExceeded()){
+            System.out.println("Бюджет превышен");
+        }
+
         return name + " | Потрачено: " + spent +
                 (budgetLimit > 0 ? " / Лимит: " + budgetLimit : "");
     }

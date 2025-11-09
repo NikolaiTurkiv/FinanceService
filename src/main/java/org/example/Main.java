@@ -4,8 +4,8 @@ import org.example.domain.User;
 import org.example.exceptions.BalanceDeficitException;
 import org.example.exceptions.UserAlreadyExistsException;
 import org.example.exceptions.UserNotFoundException;
-import org.example.service.AuthService;
-import org.example.service.FinanceService;
+import org.example.service.AuthServiceImpl;
+import org.example.service.FinanceServiceImpl;
 
 import java.util.Scanner;
 
@@ -13,7 +13,7 @@ import java.util.Scanner;
 public class Main {
     public static void main(String[] args) throws UserAlreadyExistsException {
         Scanner sc = new Scanner(System.in);
-        AuthService auth = new AuthService();
+        AuthServiceImpl auth = new AuthServiceImpl();
 
         System.out.print("Логин: ");
         String login = sc.nextLine();
@@ -32,7 +32,7 @@ public class Main {
             user = auth.register(login, pwd);
         }
 
-        FinanceService fs = new FinanceService(user);
+        FinanceServiceImpl fs = new FinanceServiceImpl(user);
         try {
             fs.transferMoney(auth,user,"newmitherfucker",333,"comment");
         } catch (UserNotFoundException e) {
