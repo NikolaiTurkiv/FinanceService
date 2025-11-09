@@ -17,6 +17,7 @@ public class WalletDataLoader {
             String json = gson.toJson(user);
             Files.createDirectories(FILE.getParent());
             Files.writeString(FILE, json);
+            System.out.println("Данные пользователя сохранены в файл user.json");
         } catch (IOException e) {
             System.out.println("Ошибка при сохранении данных пользователей: " + e.getMessage());
         }

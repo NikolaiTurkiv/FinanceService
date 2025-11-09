@@ -7,7 +7,8 @@ import org.example.exceptions.BalanceDeficitException;
 import org.example.exceptions.CategoryIsAlreadyExist;
 import org.example.exceptions.CategoryNotFoundException;
 import org.example.exceptions.UserNotFoundException;
-import org.example.service.auth.AuthServiceImpl;
+import org.example.service.auth.AuthService;
+import org.example.utils.Constants;
 
 import java.util.Set;
 
@@ -41,6 +42,11 @@ public class FinanceServiceImpl implements FinanceService {
     }
 
     @Override
+    public void changeCategoryName(String catName, String newName) throws CategoryNotFoundException {
+        user.getWallet().changeCategoryName(catName, newName);
+    }
+
+    @Override
     public Set<Category> getCategories() {
         user.getWallet().getCategories().forEach(System.out::println);
         return user.getWallet().getCategories();
@@ -52,13 +58,7 @@ public class FinanceServiceImpl implements FinanceService {
     }
 
     @Override
-    public void sendTransactionToAnotherUser(User user, Transaction transaction, String comment) {
-        transaction.setComment(comment);
-        user.getWallet().addTransaction(transaction);
-    }
-
-    @Override
-    public void transferMoney(AuthServiceImpl authServiceImpl, User user, String userToTransfer, double amount, String comment) throws UserNotFoundException, BalanceDeficitException {
+    public void transferMoney(AuthService authServiceImpl, User user, String userToTransfer, double amount, String comment) throws UserNotFoundException, BalanceDeficitException {
         User to = authServiceImpl.getUsers().get(userToTransfer);
 
         if (to == null)
@@ -67,7 +67,22 @@ public class FinanceServiceImpl implements FinanceService {
         if (amount <= 0 || user.getWallet().getBalance() < amount)
             throw new BalanceDeficitException("Недостаточно денег на балансе");
 
-        to.getWallet().addTransaction(new Transaction(amount, "", true, comment));
-        user.getWallet().addTransaction(new Transaction(amount, "", false, comment));
+        to.getWallet().addTransaction(new Transaction(amount, Constants.CATEGORY_TRANSFER, true, comment));
+        user.getWallet().addTransaction(new Transaction(amount, Constants.CATEGORY_TRANSFER, false, comment));
+    }
+
+    @Override
+    public void showTransactionsReport() {
+        user.getWallet().showTransactionsReport();
+    }
+
+    @Override
+    public void showCategoriesReport() {
+        user.getWallet().showCategoriesReport();
+    }
+
+    @Override
+    public void showCategoryReport(String catName) throws CategoryNotFoundException {
+        user.getWallet().showCategoryReport(catName);
     }
 }

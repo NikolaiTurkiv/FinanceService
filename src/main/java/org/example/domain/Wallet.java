@@ -17,6 +17,16 @@ public class Wallet {
         this.balance = 0;
     }
 
+    public void WalletInfo(){
+        System.out.println("Баланс : " + balance);
+        System.out.println("Количество транзакции : " + transactions.size());
+        System.out.println("Количество категорий : " + categories.size());
+        categories.forEach(category -> {
+            System.out.println("Название категории: " + category.getName());
+            System.out.println();
+        });
+    }
+
     public void addTransaction(Transaction t) {
         transactions.add(t);
         updateBalance(t.isIncome() ? t.getAmount() : -t.getAmount());
@@ -56,6 +66,11 @@ public class Wallet {
 
     public void showCategoriesReport() {
         System.out.println("--- Отчет по категориям ---");
+        if (categories.isEmpty()) {
+            System.out.println("Категории не обнаруженны");
+            return;
+        }
+
         categories.forEach(c ->
                 System.out.printf("Категория: %s | Потрачено: %.2f | Лимит: %.2f | Остаток: %.2f%n",
                         c.getName(), c.getSpent(), c.getBudgetLimit(), c.getBudgetLimit() - c.getSpent()));
@@ -63,6 +78,12 @@ public class Wallet {
 
     public void showTransactionsReport() {
         System.out.println("--- Транзакции ---");
+
+        if (transactions.isEmpty()){
+            System.out.println("Транзакции не обнаруженны");
+            return;
+        }
+
         transactions.stream()
                 .sorted(Comparator.comparingLong(Transaction::getTimestamp).reversed())
                 .forEach(t -> System.out.printf("[%s] %s %.2f (%s)%n",
@@ -81,7 +102,7 @@ public class Wallet {
         category.setBudgetLimit(budget);
     }
 
-    public void changCategoryName(String catName, String newName) throws CategoryNotFoundException {
+    public void changeCategoryName(String catName, String newName) throws CategoryNotFoundException {
         Category category = getCategory(catName);
 
         category.setName(newName);
