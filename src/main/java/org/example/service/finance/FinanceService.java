@@ -8,8 +8,6 @@ import org.example.exceptions.CategoryNotFoundException;
 import org.example.exceptions.UserNotFoundException;
 import org.example.service.auth.AuthService;
 
-import java.util.Set;
-
 public interface FinanceService {
     void addIncome(double amount, String category);
 
@@ -21,16 +19,16 @@ public interface FinanceService {
 
     void changeCategoryName(String catName, String newName) throws CategoryNotFoundException;
 
-    Set<Category> getCategories();
-
     void setCategoryBudget(String categoryName, double budget) throws CategoryNotFoundException;
 
     void transferMoney(AuthService authServiceImpl, User user, String userToTransfer, double amount, String comment) throws UserNotFoundException, BalanceDeficitException;
 
-    void showTransactionsReport();
+    void showTransactionsInfo();
 
-    void showCategoriesReport();
+    void showCategoriesInfo();
 
-    void showCategoryReport(String catName) throws CategoryNotFoundException;
+    void showCategoryInfo(String catName) throws CategoryNotFoundException;
+
+    void showWalletInfo();
 
 }

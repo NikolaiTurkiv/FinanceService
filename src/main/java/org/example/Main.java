@@ -20,29 +20,35 @@ public class Main {
 
     public static void main(String[] args) throws UserAlreadyExistsException {
 
-        System.out.print("Логин: ");
-        String login = scanner.nextLine();
-        System.out.print("Пароль: ");
-        String pwd = scanner.nextLine();
+        User user = null;
+        boolean runningAuthorize = true;
 
-        User user;
-        try {
-            user = auth.login(login, pwd);
+        while (runningAuthorize) {
+            System.out.print("Логин: ");
+            String login = DataValidator.getValidString();
 
-            if (user == null) {
-                System.out.println("Неверный пароль, попробуйте еще раз.");
-                return;
+            System.out.print("Пароль: ");
+            String pwd = DataValidator.getValidString();
+
+            try {
+                user = auth.login(login, pwd);
+                if (user == null) {
+                    System.out.println("Неверный пароль, попробуйте еще раз.");
+                } else {
+                    runningAuthorize = false;
+                }
+            } catch (UserNotFoundException e) {
+                System.out.println("Пользователь не найден, создаем нового...");
+                user = auth.register(login, pwd);
+                runningAuthorize = false;
             }
-        } catch (UserNotFoundException e) {
-            System.out.println("Пользователь не найден, создаем нового...");
-            user = auth.register(login, pwd);
         }
 
         FinanceService finService = new FinanceServiceImpl(user);
 
-        boolean running = true;
+        boolean runningFinances = true;
 
-        while (running) {
+        while (runningFinances) {
             printMenu();
             int choice = getIntInput("Выберите действие: ");
 
@@ -55,12 +61,14 @@ public class Main {
                     case 5 -> renameCategory(finService);
                     case 6 -> showCategories(finService);
                     case 7 -> setBudgetToCategory(finService);
-                    case 8 -> showReport(finService);
-                    case 9 -> createTransactionToAnotherUser(finService,user);
-                    case 10 -> saveDataToFile(user);
+                    case 8 -> showCategoryInfo(finService);
+                    case 9 -> showTransactionInfo(finService);
+                    case 10 -> walletInfo(finService);
+                    case 11 -> createTransactionToAnotherUser(finService,user);
+                    case 12 -> saveDataToFile(user);
                     case 0 -> {
                         System.out.println("Выход из программы");
-                        running = false;
+                        runningFinances = false;
                     }
                     default -> System.out.println("Неверный выбор");
                 }
@@ -71,6 +79,17 @@ public class Main {
 
         scanner.close();
 
+    }
+
+    private static void showCategoryInfo(FinanceService finService) throws CategoryNotFoundException {
+        System.out.println("Оставьте строку пустой для работы с категорией по умолчанию");
+        System.out.println("Введите имя категории: ");
+        String category = DataValidator.getValidCategoryName();
+        finService.showCategoryInfo(category);
+    }
+
+    private static void walletInfo(FinanceService finService) {
+        finService.showWalletInfo();
     }
 
     private static void saveDataToFile(User user) {
@@ -85,22 +104,25 @@ public class Main {
         System.out.println("Введите комментарий для получателя: ");
         String comment =  DataValidator.getValidString();
         fs.transferMoney(auth,user, transferUserName, transferAmount, comment);
+        auth.saveUsers();
     }
 
-    private static void showReport(FinanceService fs) {
-        fs.showTransactionsReport();
+    private static void showTransactionInfo(FinanceService fs) {
+        fs.showTransactionsInfo();
     }
 
     private static void setBudgetToCategory(FinanceService fs) throws CategoryNotFoundException {
+        System.out.println("Оставьте строку пустой для работы с категорией по умолчанию");
         System.out.println("Введите имя категории: ");
-        String category = DataValidator.getValidString();
+        String category = DataValidator.getValidCategoryName();
         System.out.println("Введите бюджет категории: ");
         double budget = DataValidator.getValidDouble();
         fs.setCategoryBudget(category,budget);
+        auth.saveUsers();
     }
 
     private static void showCategories(FinanceService fs) {
-        fs.showCategoriesReport();
+        fs.showCategoriesInfo();
     }
 
     private static void renameCategory(FinanceService fs) throws CategoryNotFoundException {
@@ -109,28 +131,36 @@ public class Main {
         System.out.println("Введите новое имя категории: ");
         String categoryNewName = DataValidator.getValidString();
         fs.changeCategoryName(categoryName,categoryNewName);
+        auth.saveUsers();
     }
 
     private static void removeCategory(FinanceService fs) throws CategoryNotFoundException {
         System.out.println("Введите имя категории: ");
         String category = DataValidator.getValidString();
-        fs.removeCategory(category);
+        if (fs.removeCategory(category)){
+            System.out.println("Категория удалена");
+            auth.saveUsers();
+        }
     }
 
     private static void createCategory(FinanceService fs) throws CategoryIsAlreadyExist {
+        System.out.println("Оставьте строку пустой для работы с категорией по умолчанию");
         System.out.println("Введите имя категории: ");
-        String category = DataValidator.getValidString();
+        String category = DataValidator.getValidCategoryName();
         System.out.println("Введите бюджет категории: ");
         double budget = DataValidator.getValidDouble();
         fs.addCategory(new Category(category,budget));
+        auth.saveUsers();
     }
 
     private static void addExpense(FinanceService fs) {
+        System.out.println("Оставьте строку пустой для работы с категорией по умолчанию");
         System.out.println("Введите имя категории в которой будет произведен расход: ");
-        String category = DataValidator.getValidString();
+        String category = DataValidator.getValidCategoryName();
         System.out.println("Введите сумму: ");
         double amount = DataValidator.getValidDouble();
         fs.addExpense(amount,category);
+        auth.saveUsers();
     }
 
     private static void addIncome(FinanceService fs) {
@@ -139,25 +169,27 @@ public class Main {
         System.out.println("Введите сумму: ");
         double amount = DataValidator.getValidDouble();
         fs.addIncome(amount,category);
-
+        auth.saveUsers();
     }
 
     private static void printMenu() {
-        System.out.println("╔══════════════════════════════════════════════════════════════╗");
-        System.out.println("║                      💰 МЕНЮ УПРАВЛЕНИЯ 💰                   ║");
-        System.out.println("╠══════╦═══════════════════════════════════════════════════════╣");
-        System.out.println("║ 1️⃣   ║ Добавить доход                                       ║");
-        System.out.println("║ 2️⃣   ║ Добавить расход                                      ║");
-        System.out.println("║ 3️⃣   ║ Создать категорию                                    ║");
-        System.out.println("║ 4️⃣   ║ Удалить категорию                                    ║");
-        System.out.println("║ 5️⃣   ║ Переименовать категорию                              ║");
-        System.out.println("║ 6️⃣   ║ Показать категории                                   ║");
-        System.out.println("║ 7️⃣   ║ Установить бюджет в категории                        ║");
-        System.out.println("║ 8️⃣   ║ Отчёт по транзакциям                                 ║");
-        System.out.println("║ 9️⃣   ║ Перевод                                              ║");
-        System.out.println("║ 🔟   ║ Вывести информацию о пользователе в файл             ║");
-        System.out.println("║ 0️⃣   ║ Выход                                                ║");
-        System.out.println("╚══════╩══════════════════════════════════════════════════════╝");
+        System.out.println("╔═══════════════════════════════════════════════════════════════════╗");
+        System.out.println("║                   💰  М Е Н Ю  У П Р А В Л Е Н И Я  💰            ║");
+        System.out.println("╠═══════╦════════════════════════════════════════════════════════════╣");
+        System.out.println("║  [1]  ║ Добавить доход                                            ║");
+        System.out.println("║  [2]  ║ Добавить расход                                           ║");
+        System.out.println("║  [3]  ║ Создать категорию                                         ║");
+        System.out.println("║  [4]  ║ Удалить категорию                                         ║");
+        System.out.println("║  [5]  ║ Переименовать категорию                                   ║");
+        System.out.println("║  [6]  ║ Показать категории                                        ║");
+        System.out.println("║  [7]  ║ Установить бюджет в категории                             ║");
+        System.out.println("║  [8]  ║ Информация по конкретной категории                        ║");
+        System.out.println("║  [9]  ║ Информация по транзакциям                                 ║");
+        System.out.println("║ [10]  ║ Информация о кошельке                                     ║");
+        System.out.println("║ [11]  ║ Перевод                                                   ║");
+        System.out.println("║ [12]  ║ Вывести информацию о пользователе в файл                  ║");
+        System.out.println("║  [0]  ║ Выход                                                     ║");
+        System.out.println("╚═══════╩════════════════════════════════════════════════════════════╝");
     }
 
     private static int getIntInput(String prompt) {

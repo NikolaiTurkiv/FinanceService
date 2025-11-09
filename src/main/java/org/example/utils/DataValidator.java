@@ -23,6 +23,17 @@ public class DataValidator {
         }
     }
 
+    public static String getValidCategoryName() {
+
+        String input = scanner.nextLine().trim();
+
+        if (!input.isEmpty()) {
+            return input;
+        } else {
+            return Constants.DEFAULT_CATEGORY;
+        }
+    }
+
     public static double getValidDouble() {
         while (true) {
             String input = scanner.nextLine().trim();

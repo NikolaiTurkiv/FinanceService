@@ -10,8 +10,6 @@ import org.example.exceptions.UserNotFoundException;
 import org.example.service.auth.AuthService;
 import org.example.utils.Constants;
 
-import java.util.Set;
-
 public class FinanceServiceImpl implements FinanceService {
     private User user;
 
@@ -47,12 +45,6 @@ public class FinanceServiceImpl implements FinanceService {
     }
 
     @Override
-    public Set<Category> getCategories() {
-        user.getWallet().getCategories().forEach(System.out::println);
-        return user.getWallet().getCategories();
-    }
-
-    @Override
     public void setCategoryBudget(String categoryName, double budget) throws CategoryNotFoundException {
         user.getWallet().setBudgetToCategory(categoryName, budget);
     }
@@ -72,17 +64,22 @@ public class FinanceServiceImpl implements FinanceService {
     }
 
     @Override
-    public void showTransactionsReport() {
+    public void showTransactionsInfo() {
         user.getWallet().showTransactionsReport();
     }
 
     @Override
-    public void showCategoriesReport() {
+    public void showCategoriesInfo() {
         user.getWallet().showCategoriesReport();
     }
 
     @Override
-    public void showCategoryReport(String catName) throws CategoryNotFoundException {
+    public void showCategoryInfo(String catName) throws CategoryNotFoundException {
         user.getWallet().showCategoryReport(catName);
+    }
+
+    @Override
+    public void showWalletInfo() {
+        user.getWallet().walletInfo();
     }
 }

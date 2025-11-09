@@ -17,18 +17,37 @@ public class Wallet {
         this.balance = 0;
     }
 
-    public void WalletInfo(){
-        System.out.println("Баланс : " + balance);
-        System.out.println("Количество транзакции : " + transactions.size());
-        System.out.println("Количество категорий : " + categories.size());
-        categories.forEach(category -> {
-            System.out.println("Название категории: " + category.getName());
-            System.out.println();
-        });
+    public void walletInfo() {
+        double spents = transactions.stream()
+                .filter(c -> !c.isIncome())
+                .mapToDouble(Transaction::getAmount)
+                .sum();
+
+        System.out.println("┌────────────────────────────┐");
+        System.out.println("│       💰 ОБЩАЯ ИНФОРМАЦИЯ │");
+        System.out.println("├────────────────────────────┤");
+        System.out.printf("│ %-25s │ %.2f%n", "Баланс", balance);
+        System.out.printf("│ %-25s │ %.2f%n", "Траты", spents);
+        System.out.printf("│ %-25s │ %d%n", "Количество транзакций", transactions.size());
+        System.out.printf("│ %-25s │ %d%n", "Количество категорий", categories.size());
+        System.out.println("└────────────────────────────┘");
+
+        System.out.println("\n📂 Категории:");
+        System.out.println("┌────────────────────────────────────────────────┐");
+        System.out.printf("│ %-20s │ %-12s │ %-12s │%n", "Название", "Бюджет", "Траты");
+        System.out.println("├────────────────────────────────────────────────┤");
+
+        categories.forEach(category -> System.out.printf("│ %-20s │ %-12.2f │ %-12.2f │%n",
+                category.getName(),
+                category.getBudgetLimit(),
+                category.getSpent()));
+
+        System.out.println("└────────────────────────────────────────────────┘");
     }
 
     public void addTransaction(Transaction t) {
         transactions.add(t);
+        System.out.println("Транзакция успешно проведена");
         updateBalance(t.isIncome() ? t.getAmount() : -t.getAmount());
 
         categories.stream()
@@ -43,7 +62,9 @@ public class Wallet {
                             Category newCat = new Category(t.getCategory());
                             if (!t.isIncome()) newCat.addSpent(t.getAmount());
                             newCat.addTransaction(t);
-                            categories.add(newCat);
+                            if (categories.add(newCat)){
+                                System.out.println("Категория успешно создана");
+                            }
                         }
                 );
     }
@@ -54,10 +75,6 @@ public class Wallet {
 
     public double getBalance() {
         return balance;
-    }
-
-    public Set<Category> getCategories() {
-        return categories;
     }
 
     private void updateBalance(double delta) {
