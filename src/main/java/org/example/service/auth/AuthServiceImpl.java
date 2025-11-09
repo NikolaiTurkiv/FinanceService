@@ -1,16 +1,18 @@
-package org.example.service;
+package org.example.service.auth;
 
 import org.example.domain.User;
 import org.example.domain.Wallet;
 import org.example.exceptions.UserAlreadyExistsException;
 import org.example.exceptions.UserNotFoundException;
+import org.example.service.DataStorage;
 
 import java.util.Map;
 
-public class AuthServiceImpl {
+public class AuthServiceImpl implements AuthService {
     private final Map<String, User> users;
 
-    public Map<String,User> getUsers(){
+    @Override
+    public Map<String, User> getUsers() {
         return users;
     }
 
@@ -18,10 +20,12 @@ public class AuthServiceImpl {
         this.users = DataStorage.load();
     }
 
+    @Override
     public void saveUsers() {
         DataStorage.save(users);
     }
 
+    @Override
     public User login(String login, String password) throws UserNotFoundException {
         User user = users.get(login);
 
@@ -35,6 +39,7 @@ public class AuthServiceImpl {
         return null;
     }
 
+    @Override
     public User register(String login, String password) throws UserAlreadyExistsException {
         if (users.containsKey(login)) {
             throw new UserAlreadyExistsException("Пользователь уже существует");

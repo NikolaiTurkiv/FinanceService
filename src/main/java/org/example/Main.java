@@ -4,8 +4,8 @@ import org.example.domain.User;
 import org.example.exceptions.BalanceDeficitException;
 import org.example.exceptions.UserAlreadyExistsException;
 import org.example.exceptions.UserNotFoundException;
-import org.example.service.AuthServiceImpl;
-import org.example.service.FinanceServiceImpl;
+import org.example.service.auth.AuthServiceImpl;
+import org.example.service.finance.FinanceServiceImpl;
 
 import java.util.Scanner;
 
