@@ -53,7 +53,7 @@ public class Category {
 
     @Override
     public String toString() {
-        if (isLimitExceeded()){
+        if (isLimitExceeded()) {
             System.out.println("Бюджет превышен");
         }
 

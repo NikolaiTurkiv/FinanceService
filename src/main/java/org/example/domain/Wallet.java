@@ -62,7 +62,7 @@ public class Wallet {
                             Category newCat = new Category(t.getCategory());
                             if (!t.isIncome()) newCat.addSpent(t.getAmount());
                             newCat.addTransaction(t);
-                            if (categories.add(newCat)){
+                            if (categories.add(newCat)) {
                                 System.out.println("Категория успешно создана");
                             }
                         }
@@ -96,7 +96,7 @@ public class Wallet {
     public void showTransactionsReport() {
         System.out.println("--- Транзакции ---");
 
-        if (transactions.isEmpty()){
+        if (transactions.isEmpty()) {
             System.out.println("Транзакции не обнаруженны");
             return;
         }

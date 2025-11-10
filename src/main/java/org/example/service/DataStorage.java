@@ -33,11 +33,12 @@ public class DataStorage {
 
         try {
             String json = Files.readString(FILE);
-            Type type = new TypeToken<Map<String, User>>() {}.getType();
+            Type type = new TypeToken<Map<String, User>>() {
+            }.getType();
             Map<String, User> users = gson.fromJson(json, type);
             return users != null ? users : new HashMap<>();
         } catch (IOException e) {
-            System.out.println("Ошибка при загрузке данных пользователей: " +  e.getMessage());
+            System.out.println("Ошибка при загрузке данных пользователей: " + e.getMessage());
         }
 
         return new HashMap<>();

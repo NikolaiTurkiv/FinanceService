@@ -11,11 +11,13 @@ public class User {
         this.wallet = wallet;
     }
 
-    public String getLogin() { return login; }
-    public String getPassword() { return password; }
-    public Wallet getWallet() { return wallet; }
+    public String getPassword() {
+        return password;
+    }
 
-    public void setWallet(Wallet wallet) { this.wallet = wallet; }// Кошелек пользователя
+    public Wallet getWallet() {
+        return wallet;
+    }
 
     @Override
     public String toString() {

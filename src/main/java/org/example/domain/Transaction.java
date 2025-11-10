@@ -8,14 +8,14 @@ public class Transaction {
     private String comment;
 
 
-    public Transaction(double amount, String category,boolean isIncome) {
+    public Transaction(double amount, String category, boolean isIncome) {
         this.amount = amount;
         this.category = category;
         this.isIncome = isIncome;
         this.timestamp = System.currentTimeMillis();
     }
 
-    public Transaction(double amount, String category,boolean isIncome, String comment) {
+    public Transaction(double amount, String category, boolean isIncome, String comment) {
         this.amount = amount;
         this.category = category;
         this.isIncome = isIncome;

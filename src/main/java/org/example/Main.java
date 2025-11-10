@@ -64,7 +64,7 @@ public class Main {
                     case 8 -> showCategoryInfo(finService);
                     case 9 -> showTransactionInfo(finService);
                     case 10 -> walletInfo(finService);
-                    case 11 -> createTransactionToAnotherUser(finService,user);
+                    case 11 -> createTransactionToAnotherUser(finService, user);
                     case 12 -> saveDataToFile(user);
                     case 0 -> {
                         System.out.println("Выход из программы");
@@ -102,8 +102,8 @@ public class Main {
         System.out.println("Введите сумму для перевода: ");
         double transferAmount = DataValidator.getValidDouble();
         System.out.println("Введите комментарий для получателя: ");
-        String comment =  DataValidator.getValidString();
-        fs.transferMoney(auth,user, transferUserName, transferAmount, comment);
+        String comment = DataValidator.getValidString();
+        fs.transferMoney(auth, user, transferUserName, transferAmount, comment);
         auth.saveUsers();
     }
 
@@ -117,7 +117,7 @@ public class Main {
         String category = DataValidator.getValidCategoryName();
         System.out.println("Введите бюджет категории: ");
         double budget = DataValidator.getValidDouble();
-        fs.setCategoryBudget(category,budget);
+        fs.setCategoryBudget(category, budget);
         auth.saveUsers();
     }
 
@@ -130,14 +130,14 @@ public class Main {
         String categoryName = DataValidator.getValidString();
         System.out.println("Введите новое имя категории: ");
         String categoryNewName = DataValidator.getValidString();
-        fs.changeCategoryName(categoryName,categoryNewName);
+        fs.changeCategoryName(categoryName, categoryNewName);
         auth.saveUsers();
     }
 
     private static void removeCategory(FinanceService fs) throws CategoryNotFoundException {
         System.out.println("Введите имя категории: ");
         String category = DataValidator.getValidString();
-        if (fs.removeCategory(category)){
+        if (fs.removeCategory(category)) {
             System.out.println("Категория удалена");
             auth.saveUsers();
         }
@@ -149,7 +149,7 @@ public class Main {
         String category = DataValidator.getValidCategoryName();
         System.out.println("Введите бюджет категории: ");
         double budget = DataValidator.getValidDouble();
-        fs.addCategory(new Category(category,budget));
+        fs.addCategory(new Category(category, budget));
         auth.saveUsers();
     }
 
@@ -159,7 +159,7 @@ public class Main {
         String category = DataValidator.getValidCategoryName();
         System.out.println("Введите сумму: ");
         double amount = DataValidator.getValidDouble();
-        fs.addExpense(amount,category);
+        fs.addExpense(amount, category);
         auth.saveUsers();
     }
 
@@ -168,7 +168,7 @@ public class Main {
         String category = DataValidator.getValidString();
         System.out.println("Введите сумму: ");
         double amount = DataValidator.getValidDouble();
-        fs.addIncome(amount,category);
+        fs.addIncome(amount, category);
         auth.saveUsers();
     }
 
@@ -203,7 +203,4 @@ public class Main {
             }
         }
     }
-
-
-
 }
