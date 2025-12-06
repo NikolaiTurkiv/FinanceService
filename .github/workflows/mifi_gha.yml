@@ -4,49 +4,37 @@ on:
   push:
     branches: [ "main" ]
   pull_request:
-    branches: [ "main" ]
 
 jobs:
-
   build_and_test:
     runs-on: ubuntu-latest
+
     steps:
+      - uses: actions/checkout@v4
 
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Set up JDK 17
+      - name: Set up JDK
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: 17
 
-      - name: Grant execute permission for gradlew
+      - name: Give rights
         run: chmod +x gradlew
 
-      - name: Build project
+      - name: Build
         run: ./gradlew build
 
-      - name: Run tests
+      - name: Test
         run: ./gradlew test
 
   deploy:
     needs: build_and_test
     runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - name: Trigger Render deploy
+        run: curl -X POST "$RENDER_DEPLOY_HOOK"
 
-      - name: Deploy to local machine via SSH
-        uses: appleboy/ssh-action@v0.1.10
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_KEY }}
-          port: 22
-          script: |
-            echo "Deploy started on local Mac"
-            mkdir -p ~/deployed-app
-            cp -r . ~/deployed-app/
-            echo "App deployed"
+      - name: Success deploy
+        run: echo "SUCCESS"
