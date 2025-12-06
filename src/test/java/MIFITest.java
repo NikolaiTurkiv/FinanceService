@@ -7,7 +7,6 @@ public class MIFITest {
     void testStringEquality() {
         String expected = "MIFI_GITHUB_ACTIONS_HOME_WORK";
         String actual = "MIFI_GITHUB_ACTIONS_HOME_WORK";
-        System.out.println(actual);
         assertEquals(expected, actual, "Строки должны совпадать");
     }
 }
