@@ -44,5 +44,8 @@ jobs:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_KEY }}
-          script: | 
-            echo "SUCCESS DEPLOY!!!"
+          script: |
+            echo "Deploy started on local Mac"
+            mkdir -p ~/deployed-app
+            cp -r . ~/deployed-app/
+            echo "App deployed"
