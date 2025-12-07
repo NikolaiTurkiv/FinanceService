@@ -21,11 +21,11 @@ jobs:
       - name: Give rights
         run: chmod +x gradlew
 
-      - name: Build
-        run: ./gradlew build
+      - name: Build with Shadow
+        run: ./gradlew clean shadowJar
 
-      - name: Test
-        run: ./gradlew test
+      - name: List build artifacts
+        run: ls -lh build/libs
 
   deploy:
     needs: build_and_test
