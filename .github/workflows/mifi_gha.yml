@@ -1,40 +1,61 @@
 name: MIFI Homework
-
+#  Имя GitHub Actions workflow. Показывается в интерфейсе GitHub.
 on:
+#  Определяет, при каких событиях запускать workflow.
   push:
+#    Запуск при каждом push.
     branches: [ "main" ]
+# Workflow запускается только если push сделан в ветку main.
   pull_request:
-
+# Workflow запускается при открытии или обновлении pull request в репозиторий.
 jobs:
+# Список задач, которые выполнит GitHub Actions.
   build_and_test:
+# Имя первой задачи. Выполняет сборку и проверку.
+
     runs-on: ubuntu-latest
-
+# Эта задача будет выполняться на виртуальной машине с Linux Ubuntu.
     steps:
+# Набор пошаговых команд.
       - uses: actions/checkout@v4
-
+# Скачивает код репозитория внутрь виртуальной машины.
       - name: Set up JDK
+# Название шага. Просто подпись в интерфейсе.
         uses: actions/setup-java@v4
+# Использует официальный экшен для установки Java.
         with:
+# Передаёт параметры экшену.
           distribution: temurin
+# Указывает использовать дистрибутив Java Temurin.
           java-version: 17
+# Устанавливает версию Java 17.
 
       - name: Give rights
         run: chmod +x gradlew
+# Делает файл gradlew исполняемым, чтобы его можно было запускать.
 
       - name: Build with Shadow
         run: ./gradlew clean shadowJar
-
+# Запускает Gradle:
+# clean — очистка прошлых сборок
+# shadowJar — сборка жирного JAR-файла с зависимостями
       - name: List build artifacts
         run: ls -lh build/libs
+# Показывает список файлов, созданных сборкой.
 
   deploy:
+# Вторая задача, отвечающая за отправку на Render.
     needs: build_and_test
+# Эта задача запускается только после успешного завершения build_and_test.
     runs-on: ubuntu-latest
+# Запускается на Ubuntu.
     if: github.ref == 'refs/heads/main'
-
+# Условие. Задача запускается только если workflow был запущен в ветке main.
     steps:
       - name: Trigger Render deploy
         run: curl -X POST "${{ secrets.RENDER_DEPLOY_HOOK }}"
+# Отправляет POST-запрос на Render, запускающий деплой.
+# URL хранится в GitHub Secrets (безопасно).
 
       - name: Success deploy
         run: echo "SUCCESS"
