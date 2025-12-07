@@ -19,6 +19,7 @@ public class Main {
     private static final AuthService auth = new AuthServiceImpl();
 
     public static void main(String[] args){
+        System.out.println("Коммит для презентации");
         System.out.println("Github Actions MIFI");
     }
 
