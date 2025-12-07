@@ -18,68 +18,72 @@ public class Main {
     private static final Scanner scanner = new Scanner(System.in);
     private static final AuthService auth = new AuthServiceImpl();
 
-    public static void main(String[] args) throws UserAlreadyExistsException {
-
-        User user = null;
-        boolean runningAuthorize = true;
-
-        while (runningAuthorize) {
-            System.out.print("Логин: ");
-            String login = DataValidator.getValidString();
-
-            System.out.print("Пароль: ");
-            String pwd = DataValidator.getValidString();
-
-            try {
-                user = auth.login(login, pwd);
-                if (user == null) {
-                    System.out.println("Неверный пароль, попробуйте еще раз.");
-                } else {
-                    runningAuthorize = false;
-                }
-            } catch (UserNotFoundException e) {
-                System.out.println("Пользователь не найден, создаем нового...");
-                user = auth.register(login, pwd);
-                runningAuthorize = false;
-            }
-        }
-
-        FinanceService finService = new FinanceServiceImpl(user);
-
-        boolean runningFinances = true;
-
-        while (runningFinances) {
-            printMenu();
-            int choice = getIntInput("Выберите действие: ");
-
-            try {
-                switch (choice) {
-                    case 1 -> addIncome(finService);
-                    case 2 -> addExpense(finService);
-                    case 3 -> createCategory(finService);
-                    case 4 -> removeCategory(finService);
-                    case 5 -> renameCategory(finService);
-                    case 6 -> showCategories(finService);
-                    case 7 -> setBudgetToCategory(finService);
-                    case 8 -> showCategoryInfo(finService);
-                    case 9 -> showTransactionInfo(finService);
-                    case 10 -> walletInfo(finService);
-                    case 11 -> createTransactionToAnotherUser(finService, user);
-                    case 12 -> saveDataToFile(user);
-                    case 0 -> {
-                        System.out.println("Выход из программы");
-                        runningFinances = false;
-                    }
-                    default -> System.out.println("Неверный выбор");
-                }
-            } catch (Exception | CategoryNotFoundException | UserNotFoundException e) {
-                System.out.println("Ошибка: " + e.getMessage());
-            }
-        }
-
-        scanner.close();
-
+    public static void main(String[] args){
+        System.out.println("Github Actions MIFI");
     }
+
+//    public static void main(String[] args) throws UserAlreadyExistsException {
+//
+//        User user = null;
+//        boolean runningAuthorize = true;
+//
+//        while (runningAuthorize) {
+//            System.out.print("Логин: ");
+//            String login = DataValidator.getValidString();
+//
+//            System.out.print("Пароль: ");
+//            String pwd = DataValidator.getValidString();
+//
+//            try {
+//                user = auth.login(login, pwd);
+//                if (user == null) {
+//                    System.out.println("Неверный пароль, попробуйте еще раз.");
+//                } else {
+//                    runningAuthorize = false;
+//                }
+//            } catch (UserNotFoundException e) {
+//                System.out.println("Пользователь не найден, создаем нового...");
+//                user = auth.register(login, pwd);
+//                runningAuthorize = false;
+//            }
+//        }
+//
+//        FinanceService finService = new FinanceServiceImpl(user);
+//
+//        boolean runningFinances = true;
+//
+//        while (runningFinances) {
+//            printMenu();
+//            int choice = getIntInput("Выберите действие: ");
+//
+//            try {
+//                switch (choice) {
+//                    case 1 -> addIncome(finService);
+//                    case 2 -> addExpense(finService);
+//                    case 3 -> createCategory(finService);
+//                    case 4 -> removeCategory(finService);
+//                    case 5 -> renameCategory(finService);
+//                    case 6 -> showCategories(finService);
+//                    case 7 -> setBudgetToCategory(finService);
+//                    case 8 -> showCategoryInfo(finService);
+//                    case 9 -> showTransactionInfo(finService);
+//                    case 10 -> walletInfo(finService);
+//                    case 11 -> createTransactionToAnotherUser(finService, user);
+//                    case 12 -> saveDataToFile(user);
+//                    case 0 -> {
+//                        System.out.println("Выход из программы");
+//                        runningFinances = false;
+//                    }
+//                    default -> System.out.println("Неверный выбор");
+//                }
+//            } catch (Exception | CategoryNotFoundException | UserNotFoundException e) {
+//                System.out.println("Ошибка: " + e.getMessage());
+//            }
+//        }
+//
+//        scanner.close();
+//
+//    }
 
     private static void showCategoryInfo(FinanceService finService) throws CategoryNotFoundException {
         System.out.println("Оставьте строку пустой для работы с категорией по умолчанию");
