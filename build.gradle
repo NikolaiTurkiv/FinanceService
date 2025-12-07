@@ -1,6 +1,7 @@
 plugins {
     id 'java'
     id 'org.jetbrains.kotlin.jvm'
+    id 'com.github.johnrengelman.shadow' version '8.1.1'
 }
 
 group = 'org.example'
@@ -23,4 +24,12 @@ test {
 }
 kotlin {
     jvmToolchain(17)
+}
+
+jar {
+    manifest {
+        attributes(
+                "Main-Class": "org.example.Main"
+        )
+    }
 }
